@@ -9,6 +9,8 @@ import android.util.Log
 import android.view.WindowManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import kotlinx.android.synthetic.*
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,7 +21,7 @@ class MainActivity : AppCompatActivity() {
     private val REQUIRED_PERMISSIONS = arrayOf(android.Manifest.permission.CAMERA,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
     //나는 후면 카메라를 사용할 것이다 <-> 전면 쓰고 싶으면 BACK을 FRONT로(혹시나 바꿀 수 있으니 var로 처리)
-    private var CAMERA_FACING = Camera.CameraInfo.CAMERA_FACING_FRONT
+    private var CAMERA_FACING = Camera.CameraInfo.CAMERA_FACING_BACK
 
     private var myCameraPreview: MyCameraPreview? = null
 
@@ -35,6 +37,7 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
+
         //------------------------권한채크 파트----------------------------//
 
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
@@ -49,7 +52,7 @@ class MainActivity : AppCompatActivity() {
                 && permissionCheckStorage == PackageManager.PERMISSION_GRANTED){
 
                 Log.d("Debug","권한 이미있음")
-                //startCamera()
+                startCamera()
             }else{ //권한이 없으면
                 Log.d("Debug","권한 없음")
 
@@ -60,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         }else{
             //OS가 마쉬멜로 이전일 경우 권한체크가 필요없으므로
             Log.d("Debug","마쉬멜로 버전 이하인 관계로 권한이 이미 있음")
-            //startCamera()
+            startCamera()
         }
 
         //------------------------권한채크 파트 끝--------------------------//
@@ -88,10 +91,18 @@ class MainActivity : AppCompatActivity() {
             }
 
             if(check_result){
-                //startCamera()
+                startCamera()
             }else{
                 Log.d("Debug","권한 거부")
             }
         }
+    }
+
+    private fun startCamera(){
+        Log.d("Debug","startCamera")
+
+        myCameraPreview = MyCameraPreview(this, CAMERA_FACING)
+
+        cameraPreview.addView(myCameraPreview)
     }
 }
